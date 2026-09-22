@@ -30,6 +30,13 @@ async function guildMemberAdd(client: DatadropClient, member: GuildMember) {
         comiteeChannelid,
     } = client.config;
     const annoncesRole = await member.guild.roles.fetch(announce.roleid);
+    const pseudoToChangeRole = client.config.pseudoToChangeRoleId
+        ? await member.guild.roles.fetch(client.config.pseudoToChangeRoleId)
+        : null;
+
+    const roleToSelectRole = client.config.roleToSelectRoleId
+        ? await member.guild.roles.fetch(client.config.roleToSelectRoleId)
+        : null;
 
     const userFromDatabase = await client.database.read(member.id);
     if (userFromDatabase?.isDeleted) {
@@ -58,6 +65,13 @@ async function guildMemberAdd(client: DatadropClient, member: GuildMember) {
             client.logger.info(
                 `Le rôle <${annoncesRole.name}> a été ajouté à <${member.user.tag}> à l'entrée de la guilde`,
             );
+        }
+        if (pseudoToChangeRole) {
+            await member.roles.add(pseudoToChangeRole);
+        }
+
+        if (roleToSelectRole) {
+            await member.roles.add(roleToSelectRole);
         }
 
         await member.send({ embeds: [embed], components: [row] });
