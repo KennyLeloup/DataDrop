@@ -40,8 +40,8 @@ export interface Configuration {
     delegatesRoleid: Snowflake;
     professorRoleid: Snowflake;
     verifiedRoleId: Snowflake;
-    pseudoToChangeRoleId?: Snowflake;
-    roleToSelectRoleId?: Snowflake;
+    pseudoToChangeRoleId: Snowflake;
+    roleToSelectRoleId: Snowflake;
 
     informationsChannelid: Snowflake;
     faqChannelid: Snowflake;

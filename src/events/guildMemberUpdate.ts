@@ -15,29 +15,29 @@ async function guildMemberUpdate(
 ) {
     if (newMember.user.bot) return;
 
-    if (
-        !client.config.roleToSelectRoleId ||
-        !client.config.pseudoToChangeRoleId
-    )
-        return;
-
     const { first, second, third, roleToSelectRoleId, pseudoToChangeRoleId } =
         client.config;
 
     const hasYearRole =
-        newMember.roles.cache.has(first.roleid) ||
-        newMember.roles.cache.has(second.roleid) ||
-        newMember.roles.cache.has(third.roleid);
+        newMember.roles.resolve(first.roleid) ||
+        newMember.roles.resolve(second.roleid) ||
+        newMember.roles.resolve(third.roleid);
 
     const displayNameParts = newMember.displayName.trim().split(/\s+/);
     const hasDisplayNameChanged =
         oldMember.displayName !== newMember.displayName;
     const hasValidDisplayName = displayNameParts.length >= 2;
 
+    const roleToSelectRole =
+        await newMember.guild.roles.fetch(roleToSelectRoleId);
+
+    const pseudoToChangeRole =
+        await newMember.guild.roles.fetch(pseudoToChangeRoleId);
+
     if (hasYearRole && newMember.roles.cache.has(roleToSelectRoleId)) {
         await newMember.roles.remove(roleToSelectRoleId);
         client.logger.info(
-            `Le rôle <Rôle à sélectionner> a été retiré à <${newMember.user.tag}>`,
+            `Le rôle <${roleToSelectRole?.name}> a été retiré à <${newMember.user.tag}>`,
         );
     }
 
@@ -48,7 +48,7 @@ async function guildMemberUpdate(
     ) {
         await newMember.roles.remove(pseudoToChangeRoleId);
         client.logger.info(
-            `Le rôle <Pseudo à modifier> a été retiré à <${newMember.user.tag}>`,
+            `Le rôle <${pseudoToChangeRole?.name}> a été retiré à <${newMember.user.tag}>`,
         );
     }
 }

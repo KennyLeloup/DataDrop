@@ -28,15 +28,15 @@ async function guildMemberAdd(client: DatadropClient, member: GuildMember) {
         faqChannelid,
         rolesChannelid,
         comiteeChannelid,
+        pseudoToChangeRoleId,
+        roleToSelectRoleId,
     } = client.config;
     const annoncesRole = await member.guild.roles.fetch(announce.roleid);
-    const pseudoToChangeRole = client.config.pseudoToChangeRoleId
-        ? await member.guild.roles.fetch(client.config.pseudoToChangeRoleId)
-        : null;
+    const pseudoToChangeRole =
+        await member.guild.roles.fetch(pseudoToChangeRoleId);
 
-    const roleToSelectRole = client.config.roleToSelectRoleId
-        ? await member.guild.roles.fetch(client.config.roleToSelectRoleId)
-        : null;
+    const roleToSelectRole =
+        await member.guild.roles.fetch(roleToSelectRoleId);
 
     const userFromDatabase = await client.database.read(member.id);
     if (userFromDatabase?.isDeleted) {
